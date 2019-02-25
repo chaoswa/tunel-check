@@ -1,0 +1,57 @@
+.main-bar{
+  display: flex;
+  align-items: center;
+  width: 95%;
+  height: 40px;
+  line-height: 40px;
+  font-size: 14px;
+  color: #333;
+  margin: 20px 0;
+  background: rgb(235,239,243);
+}
+.main-tab{
+  width: 95%;
+  height: 400px;
+}
+.my-page{
+  margin-top: 20px;
+}
+.bar-btn{
+  width: 100px;
+  height: 100%;
+  cursor: pointer;
+}
+
+.edtior-icon{
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin: 0 5px;
+  background: url('../../../assets/images/bianji.png') no-repeat;
+  background-size:100% 100%;
+  cursor: pointer;
+  &:hover{
+    background: url('../../../assets/images/bainji01.png') no-repeat;
+    background-size:100% 100%;
+  }
+}
+.dele-icon{
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin: 0 5px;
+  background: url('../../../assets/images/dele.png') no-repeat;
+  background-size:100% 100%;
+  cursor: pointer;
+  &:hover{
+    background: url('../../../assets/images/dele01.png') no-repeat;
+    background-size:100% 100%;
+  }
+}
+.move-enter-active, .regitWrap .move-leave-active {
+  transition: all 0.3s linear;
+  transform: translate3d(0, 0, 0);
+}
+.move-enter, .regitWrap .move-leave {
+  transform: translate3d(100%, 0, 0);
+}
