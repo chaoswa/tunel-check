@@ -20,6 +20,10 @@
       <img src="../../assets/images/icon24.png" v-show="isType">
       <span :class="{'btn-active':isType}">卫星</span>
     </div>
+    <div class="item" @click="resave">
+      <img src="../../assets/images/resave.png">
+      <span class="btn-active">复位</span>
+    </div>
   </bm-control>
 </template>
 
@@ -69,6 +73,9 @@ export default {
       this.isDevice=false
       this.$emit('changeMapDevice',this.isDevice)
     },
+    resave(){
+      this.$emit('resave')
+    },
     allHide(){
       this.isPip=false
       this.isValve=false
@@ -83,7 +90,8 @@ export default {
 <style lang="less" scoped>
 .map-bar{
   width: 50px;
-  height: 200px;
+  height: 220px;
+  padding: 10px 0;
   background: #fff;
   box-shadow:0px 0px 1px #999;
   border-radius: 5px;

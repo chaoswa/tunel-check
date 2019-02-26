@@ -5,7 +5,7 @@
 
       <el-col :span="24" class="right">
         <div class="right-box" ref="mapBox">
-          <baidu-map class="map" :center="center" :zoom="zoom" :scroll-wheel-zoom="true" @ready="handler" @zoomend="syncCenterAndZoom" :map-type="mapType">
+          <baidu-map class="map" :center="center" :zoom="zoom" :scroll-wheel-zoom="true" @ready="handler" @zoomend="syncCenterAndZoom" @dragend="dragend" :map-type="mapType">
 
             <bm-navigation anchor="BMAP_ANCHOR_BOTTOM_RIGHT" :offset="offset"></bm-navigation>
 
@@ -19,7 +19,7 @@
             <map-speed  ref="mapSpeed" v-show="progressShow" @playShuLu="playShuLu" @notSearchLine="notSearchLine" @changePercent="changePercent"></map-speed>
             
             <!-- 定位 -->
-            <map-bar @changeMapType="changeMapType" ref="mapBar" @changeMapValve="changeMapValve" @changeMapPip="changeMapPip" @changeMapDevice="changeMapDevice"></map-bar>
+            <map-bar @changeMapType="changeMapType" ref="mapBar" @resave="resave" @changeMapValve="changeMapValve" @changeMapPip="changeMapPip" @changeMapDevice="changeMapDevice"></map-bar>
 
             <!-- 管道线路 -->
             <bm-polyline v-for="(item,index) in linePath" :key="index+0.1" ref="allPip" @click="clickPiper(item)" :path="item" :stroke-color="pipColor(item)" :stroke-opacity="0.8" :stroke-weight="6"></bm-polyline>
@@ -400,8 +400,6 @@ export default {
 
     //地图实例初始化成功
     async handler ({BMap, map}) {
-      this.BMap=BMap
-      this.map=map
       //获取任务进度和状态
       this.allDevice=[]
       let pipeline=[];
@@ -450,6 +448,10 @@ export default {
       this.$nextTick(()=>{
         this.toggleValveShow()
       })
+    },
+    resave(){
+      this.center={lng: 120.680, lat: 30.211}
+      this.zoom=14      
     },
     //编辑阀井
     editorValve(data){
@@ -505,6 +507,11 @@ export default {
         })
       })
       return arr
+    },
+
+    //地图拖拽监听
+    dragend(e){
+      this.center=e.target.point
     },
 
     //地图缩放时触发监听事件
