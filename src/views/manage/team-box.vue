@@ -21,7 +21,7 @@
         </el-col>
       </el-form-item>
 
-      <el-form-item label="性别：" prop="sex" required>
+      <el-form-item label="性别：" prop="sex">
         <el-col :span="24">
           <el-select v-model="taskForm.sex" placeholder="请选择性别">
             <el-option
@@ -46,7 +46,7 @@
         </el-col>
       </el-form-item>
 
-      <el-form-item label="职务：" prop="position" required>
+      <el-form-item label="职务：" prop="position">
         <el-col :span="24">
           <el-input  v-model="taskForm.position" placeholder="请输入职务"></el-input>
         </el-col>
@@ -122,18 +122,18 @@ import {startLoading,endLoading} from '@/util/common';
           ],
           username: [
             { required: true, message: '请输入用户名', trigger: 'blur' },
-            { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+            { min: 2, max: 20, message: '长度在 2 到 20 个字符', trigger: 'blur' }
           ],
           mobilePhone: [
             {required: false, message: '请输入手机号码', trigger: 'blur'},
             {pattern:/^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1})|(17[0-9]{1}))+\d{8})$/,message:"请输入合法的手机号",trigger: 'blur'}
           ],
-          position: [
-            { required: false, message: '请输入职务', trigger: 'blur' }
-          ],
-          sex: [
-            { required: false, message: '请输入性别', trigger: 'change' }
-          ],
+          // position: [
+          //   { required: false, message: '请输入职务', trigger: 'blur' }
+          // ],
+          // sex: [
+          //   { required: false, message: '请输入性别', trigger: 'change' }
+          // ],
           deviceCode: [
             { required: false, message: '请选择平板终端', trigger: 'change' }
           ],

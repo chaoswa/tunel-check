@@ -3,7 +3,7 @@
       <el-aside width="210px">
         <div class="left-box">
           <ul class="manage-bar">
-            <li><router-link tag="div"  to="/home/manage/teams"><div>巡检班组管理</div></router-link></li>
+            <li><router-link tag="div"  to="/home/manage/teams"><div>组织机构管理</div></router-link></li>
             <li><router-link tag="div"  to="/home/manage/device"><div>巡检终端管理</div></router-link></li>
             <li><router-link tag="div"  to="/home/manage/car"><div>巡检车辆管理</div></router-link></li>
           </ul>

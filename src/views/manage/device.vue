@@ -20,7 +20,7 @@
       tooltip-effect="dark"
       stripe
       @selection-change="handleSelectionChange"
-      style="width: 90%;  height: 580px;"
+      style="width: 90%;  height: 540px;"
       :header-cell-style="{background:'#f5f5f5',color:'#333'}"
       :cell-style="isCell">
 

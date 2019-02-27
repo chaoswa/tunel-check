@@ -1,29 +1,44 @@
 <template>
   <bm-control class="map-bar" anchor="BMAP_ANCHOR_TOP_LEFT" :offset="offset">
-    <div class="item" @click="changeMapDevice">
-      <img src="../../assets/images/icon21.png" v-show="isDevice">
-      <img src="../../assets/images/icon30.png" v-show="!isDevice">
-      <span :class="{'btn-active':isDevice}">人员</span>
-    </div>
-    <div class="item" @click="changeMapPip">
-      <img src="../../assets/images/icon22.png" v-show="isPip">
-      <img src="../../assets/images/icon29.png" v-show="!isPip">
-      <span :class="{'btn-active':isPip}">管线</span>
-    </div>
-    <div class="item" @click="changeMapValve">
-      <img src="../../assets/images/icon23.png" v-show="isValve">
-      <img src="../../assets/images/valve01.png" v-show="!isValve">
-      <span :class="{'btn-active':isValve}">阀井</span>
-    </div>
-    <div class="item" @click="changeMapType">
-      <img src="../../assets/images/icon28.png" v-show="!isType">
-      <img src="../../assets/images/icon24.png" v-show="isType">
-      <span :class="{'btn-active':isType}">卫星</span>
-    </div>
-    <div class="item" @click="resave">
-      <img src="../../assets/images/resave.png">
-      <span class="btn-active">复位</span>
-    </div>
+    <el-tooltip class="item" effect="dark" content="人员" placement="right">
+      <div class="item" @click="changeMapDevice">
+        <img src="../../assets/images/icon21.png" v-show="isDevice">
+        <img src="../../assets/images/icon30.png" v-show="!isDevice">
+        <!-- <span :class="{'btn-active':isDevice}">人员</span> -->
+      </div>
+    </el-tooltip>
+
+    <el-tooltip class="item" effect="dark" content="管线" placement="right">
+      <div class="item" @click="changeMapPip">
+        <img src="../../assets/images/icon22.png" v-show="isPip">
+        <img src="../../assets/images/icon29.png" v-show="!isPip">
+        <!-- <span :class="{'btn-active':isPip}">管线</span> -->
+      </div>
+    </el-tooltip>
+
+    <el-tooltip class="item" effect="dark" content="阀井" placement="right">
+      <div class="item" @click="changeMapValve">
+        <img src="../../assets/images/icon23.png" v-show="isValve">
+        <img src="../../assets/images/valve01.png" v-show="!isValve">
+        <!-- <span :class="{'btn-active':isValve}">阀井</span> -->
+      </div>
+    </el-tooltip>
+
+    <el-tooltip class="item" effect="dark" content="卫星" placement="right">
+      <div class="item" @click="changeMapType">
+        <img src="../../assets/images/icon28.png" v-show="!isType">
+        <img src="../../assets/images/icon24.png" v-show="isType">
+        <!-- <span :class="{'btn-active':isType}">卫星</span> -->
+      </div>
+    </el-tooltip>
+    
+    <el-tooltip class="item" effect="dark" content="巡检区" placement="right">
+      <div class="item" @click="resave">
+        <img src="../../assets/images/resave.png">
+        <!-- <span class="btn-active">复位</span> -->
+      </div>
+    </el-tooltip>
+    
   </bm-control>
 </template>
 
@@ -110,8 +125,8 @@ export default {
   text-align: center;
   cursor: pointer;
   &>img{
-    width: 20px;
-    height: 20px;
+    width: 25px;
+    height: 25px;
     margin-bottom: 5px;
   }
 }

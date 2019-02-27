@@ -214,9 +214,9 @@ export default {
       if(!this.multipleSelection.length) return;
       this.list = [];
       this.multipleSelection.forEach((item)=>{
-        this.list.push(item.id)
+        this.list.push({"id":item.id,"attr1":item.attr1})
       })
-      // console.log('勾选的设备',this.list)
+      console.log('勾选的设备',this.list)
       this.centerDialogVisible=true 
     },
     //修改
@@ -226,14 +226,14 @@ export default {
     },
     //确定删除
     comfimDelete(){
-      this.centerDialogVisible=false 
+      this.centerDialogVisible=false
       this.$refs.teamBox.toDeletePerson(this.list);
     },
     //删除
     handleDelete(index,row){
-      // console.log(row)
+      console.log(row)
       this.centerDialogVisible=true 
-      this.list = [row.id];
+      this.list = [{"id":row.id,"attr1":row.attr1}];
     }
   },
   mounted(){
