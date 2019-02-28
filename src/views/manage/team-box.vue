@@ -42,7 +42,15 @@
 
       <el-form-item label="单位班组：">
         <el-col :span="24">
-          <el-input  :value="$store.state.office.officeName" :disabled="true"></el-input>
+          <el-select v-model="officeName" @change="officeChange">
+            <el-option
+              v-for="item in office"
+              :key="item.id"
+              :label="item.name"
+              :value="item.name">
+            </el-option>
+          </el-select>
+          <!-- <el-input  :value="$store.state.office.officeName" :disabled="true"></el-input> -->
         </el-col>
       </el-form-item>
 
@@ -108,6 +116,12 @@ import {startLoading,endLoading} from '@/util/common';
           attr4:'',
           attr5:''
         },
+        officeName:'',
+        office:[
+          {id:'2',name:'巡检一班'},
+          {id:'3',name:'巡检二班'},
+          {id:'4',name:'领导班子'},
+        ],
         options:[], //可用的设备列表
         optionsPad:[],//可用的平板设备列表
         optionsHand:[],//可用的臂挂设备列表        
@@ -153,7 +167,7 @@ import {startLoading,endLoading} from '@/util/common';
         this.$refs[formName].validate((valid) => {
           if (valid) {
             startLoading()
-            this.taskForm.officeId=this.$store.state.office.id;
+            // this.taskForm.officeId=this.$store.state.office.id;
             addPerson(this.taskForm).then(res=>{
               // console.log('添加成员',res)
               endLoading()
@@ -192,7 +206,16 @@ import {startLoading,endLoading} from '@/util/common';
       //修改设备信息
       editInfo(row){
         // console.log(row)
+        if(row.officeId==1) this.officeName="组织机构"
         this.taskForm=row
+        this.officeChange(row.officeName)
+      },
+      officeChange(val){
+        let index = this.office.findIndex((item)=>{
+          return item.name==val
+        })
+        this.officeName=this.office[index].name
+        this.taskForm.officeId=this.office[index].id
       },
       typeChange(val){
         let device = this.optionsPad.filter((item)=>{
@@ -241,6 +264,7 @@ import {startLoading,endLoading} from '@/util/common';
       //重置表单
       resetForm() {
         this.taskForm.id=''
+        this.officeName=''
         this.taskForm.deviceId=''
         this.$refs['taskForm'].resetFields();
       }
