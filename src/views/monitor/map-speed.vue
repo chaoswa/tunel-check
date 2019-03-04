@@ -82,6 +82,7 @@ export default {
     search(){
       if(isEmpty(this.time)) return;
       let entity_name=this.$store.state.map.entityName;
+      console.log('****',entity_name)
       if(!entity_name) {
         this.$emit('notSearchLine');
         this.$message.warning('没有查询到轨迹');

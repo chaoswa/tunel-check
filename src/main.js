@@ -7,6 +7,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import {locationTime} from '@/config/config'
 import '@/assets/fontIcon/iconfont.css'
+import  'babel-polyfill'
 
 Vue.use(ElementUI);
 

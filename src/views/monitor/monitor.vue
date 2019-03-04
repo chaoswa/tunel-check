@@ -740,12 +740,16 @@ export default {
     },
 
     playLocation(data){
+      console.log(data)
       if(this.mapInterval) clearInterval(this.mapInterval);
       this.position={lng: data.lng, lat: data.lat}
       this.rotation=0;
       
-      if(data.carId) this.iconLuShu = this.iconOn;
-      else this.iconLuShu = this.activeIcon;
+      if(data.carId) {
+        this.iconLuShu = this.iconOn;
+      }else{
+        this.iconLuShu = this.activeIcon;
+      }
       //清空轨迹回放的路线
       this.$store.dispatch('map/getPointsList',[]);
       //重置轨迹回放的路线和进度条
@@ -757,6 +761,10 @@ export default {
 
       this.$refs.runMarker.originInstance.show();
       this.getLastInfo(data)
+      if(data.carId){
+        this.$store.dispatch('map/setEntityName',data.deviceSid);
+      }
+      
       //清除地图上其他图层
       this.hideAllMarker();
 
