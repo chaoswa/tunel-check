@@ -28,12 +28,12 @@
             <bm-marker v-for="(item) in allValve" ref="allValve" :icon="valveIcon(item)" :key="item.id" :position="item"  @click="clickHandler(item)"></bm-marker>
 
             <!-- 管道错误点 -->
-            <bm-marker v-for="(item,index) in linePoint" ref="linePoint" :key="index+0.7" :position="item" :icon="iconLinePoint" @click="clickLinePoint(item)"></bm-marker>
+            <bm-marker v-for="(item,index) in linePoint" ref="linePoint" :key="index+0.7" :position="item" :icon="!(item.lng in item)?notIcon:iconLinePoint" @click="clickLinePoint(item)"></bm-marker>
 
             <!-- 人员和设备 -->
             <bm-marker v-for="(item,index) in allDevice" ref="allDevice" :rotation="item.latest_location&&item.carId?item.latest_location.direction:0" :icon="deviceIcon(item)" :key="index+0.3" :position="item"  @click="clickDevice(item)">
-              <bm-label :content="item.label"
-                :labelStyle="{color: '#fff', fontSize : '12px',background:'#626160',border:'none',  padding: '5px',borderRadius: '5px'}" 
+              <bm-label :content="item.lng==0?'':item.label"
+                :labelStyle="{color: '#fff', fontSize : '12px',background:item.lng==0?'none':'#626160',border:'none',  padding: '5px',borderRadius: '5px'}" 
                 :offset="{width: -13, height: -30}"/>
             </bm-marker>
 
@@ -238,10 +238,10 @@
             </transition>
 
             <!-- 路书 -->
-            <bm-polyline :path="item" v-for="(item,index) in otherPolylinePath"  stroke-color="blue" :stroke-opacity="1" :stroke-weight="6" ></bm-polyline>
-            <bm-marker :position="position" ref="runMarker" :icon="iconLuShu" :rotation="rotation"></bm-marker>
-            <bm-marker :position="polylinePath[0]"  ref="startMarker" :icon="startIcon"></bm-marker>
-            <bm-marker :position="polylinePath[polylinePath.length-1]" ref="endMarker" :icon="endIcon"></bm-marker>
+            <bm-polyline :path="item" v-for="item in otherPolylinePath" :key="item" stroke-color="blue" :stroke-opacity="1" :stroke-weight="6" ></bm-polyline>
+            <bm-marker :position="position" ref="runMarker" :icon="position.lng==0?notIcon:iconLuShu" :rotation="rotation"></bm-marker>
+            <bm-marker :position="polylinePath[0]"  ref="startMarker" :icon="polylinePath[0].lng==0?notIcon:startIcon"></bm-marker>
+            <bm-marker :position="polylinePath[polylinePath.length-1]" ref="endMarker" :icon="polylinePath[polylinePath.length-1].lng==0?notIcon:endIcon"></bm-marker>
 
           </baidu-map>
         </div>
@@ -336,6 +336,11 @@ export default {
         size: {width: 28, height: 49},
         opts: {anchor: {width: 27, height:13}}
       },
+      notIcon: {
+        url: require('../../assets/images/not_icon.png'),
+        size: {width: 28, height: 49},
+        opts: {anchor: {width: 27, height:13}}
+      },
       finishPip:0,
       pendingPip:0,
       finishValve:0,
@@ -349,8 +354,8 @@ export default {
       currentPip:{lng: 116.404, lat: 39.915}, //管线信息框坐标
       currentLinePoint:{lng: 116.404, lat: 39.915}, //管线信息框坐标
       devicePositon:{lng: 116.404, lat: 39.915}, //人员和车辆坐标
-      devicePoint:{}, //人员和车辆坐标
-      deviceInfo:{},//人员和车辆信息
+      devicePoint:{lng: 0, lat: 0}, //人员和车辆坐标
+      deviceInfo:{lng: 0, lat: 0},//人员和车辆信息
       infoWindow: {  //信息框内容
         show: false,
         contents: ''
@@ -382,7 +387,7 @@ export default {
         opts: {anchor: {width: 27, height:13}}
       },
       rotation:0,
-      position:{},
+      position:{lng: 0, lat: 0},
       index:0,
       speed:80,  //路书播放速度
       progressSpeed:0.05
@@ -739,8 +744,9 @@ export default {
 
     },
 
+    //轨迹回放树，点击人员或车辆
     playLocation(data){
-      console.log(data)
+      console.log('回放',data)
       if(this.mapInterval) clearInterval(this.mapInterval);
       this.position={lng: data.lng, lat: data.lat}
       this.rotation=0;
@@ -753,20 +759,21 @@ export default {
       //清空轨迹回放的路线
       this.$store.dispatch('map/getPointsList',[]);
       //重置轨迹回放的路线和进度条
-      this.$refs.userTree.returnPlay()
+      // this.$refs.userTree.returnPlay()
       this.clearSpeedBar()
-      this.$store.dispatch('map/getDevice',data);
+      
       
       this.progressShow=true;
 
-      this.$refs.runMarker.originInstance.show();
       this.getLastInfo(data)
       if(data.carId){
+        this.$store.dispatch('map/getDevice',data);
         this.$store.dispatch('map/setEntityName',data.deviceSid);
       }
       
       //清除地图上其他图层
-      this.hideAllMarker();
+      // this.$refs.runMarker.originInstance.show();
+      // this.hideAllMarker();
 
     },
 
@@ -782,28 +789,29 @@ export default {
       else this.iconLuShu = this.activeIcon;
       //清空轨迹回放的路线
       this.$store.dispatch('map/getPointsList',[]);
-      console.log(this.$store.state.actionName)
-      if(this.$store.state.actionName=='REALTIME'){
-        let entity_name = name == 'PAD'?data.deviceSid:data.armSid;
-        let time = new Date().getTime();
-        let h = this.formatDate(time);
-        let newTime =Math.floor((time-(h*1000*60*60))/100000)*100000
-        let start_time=Math.floor((newTime+1000*60*60*24)/1000);
-        let end_time=start_time-(60*60*24);
-        getTrack(entity_name,end_time,start_time).then(res=>{
-          if(res.status==0){
-            if(!res.points.length) {
-              this.$message.warning('没有查询到轨迹');
-              return
-            }
-            this.clearTraceAndSearch(data,name)
-          }else{
-            this.$message.warning('没有查询到轨迹');
-          }
-        })
-      }else{
-        this.clearTraceAndSearch(data,name)
-      }
+      // console.log(this.$store.state.actionName)
+      this.clearTraceAndSearch(data,name)
+      // if(this.$store.state.actionName=='REALTIME'){
+      //   let entity_name = name == 'PAD'?data.deviceSid:data.armSid;
+      //   let time = new Date().getTime();
+      //   let h = this.formatDate(time);
+      //   let newTime =Math.floor((time-(h*1000*60*60))/100000)*100000
+      //   let start_time=Math.floor((newTime+1000*60*60*24)/1000);
+      //   let end_time=start_time-(60*60*24);
+      //   getTrack(entity_name,end_time,start_time).then(res=>{
+      //     if(res.status==0){
+      //       if(!res.points.length) {
+      //         this.$message.warning('没有查询到轨迹');
+      //         return
+      //       }
+      //       this.clearTraceAndSearch(data,name)
+      //     }else{
+      //       this.$message.warning('没有查询到轨迹');
+      //     }
+      //   })
+      // }else{
+      //   this.clearTraceAndSearch(data,name)
+      // }
     },
 
     //重置轨迹回放参数，并查询新的轨迹
@@ -812,10 +820,10 @@ export default {
       this.clearSpeedBar()
       this.$store.dispatch('map/getDevice',data);
       this.progressShow=true;
-      this.$refs.runMarker.originInstance.show();
+      // this.$refs.runMarker.originInstance.show();
       this.$refs.mapSpeed.initNowDate(name);
       //清除地图上其他图层
-      this.hideAllMarker();
+      // this.hideAllMarker();
     },
     //隐藏所有图层
     hideAllMarker(){
@@ -841,6 +849,8 @@ export default {
       this.otherPolylinePath=array;
       this.position=this.polylinePath[0];
       this.center=this.polylinePath[0];
+      this.$refs.runMarker.originInstance.show();
+      this.hideAllMarker();
       if(val){
         //开始播放
         this.playGame();
@@ -915,6 +925,9 @@ export default {
 
     //阀井图标设置
     valveIcon(item){
+      if(item.lng==0){
+        return this.notIcon;
+      }
       if(item.proType=="finish"){
         if(item.checkRecordList[0].checkResultStatus==="0"){
           return this.otherIcon
@@ -940,6 +953,9 @@ export default {
     },
     //人员和车辆图标设置
     deviceIcon(item){
+      if(item.lng==0){
+        return this.notIcon;
+      }
       if(item.carId){
         if(item.active){
           return this.iconOn;
@@ -1027,7 +1043,7 @@ export default {
       this.progressShow=!val
       this.$refs.mapBar.setDevice();
       if(!val) this.clearPositonInterVal()
-      if(!this.progressShow) this.clearSpeedBar();
+      if(!this.progressShow) this.clearSpeedBar()
     },
     //重置关于轨迹回放的值
     clearSpeedBar(){

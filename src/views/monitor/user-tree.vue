@@ -29,18 +29,7 @@
             </span>
           </el-tree>
         </div>
-        <!-- <div class="tree" v-show="!isPlay">
-          <div class="tree-top"><img src="../../assets/images/icon25.png"><span>绍兴昆仑燃气</span></div>
-          <el-tree :data="options"  @node-click="playLine"   ref="playTree" class="tree-item">
-            <span class="custom-tree-node" slot-scope="{ node, data }">
-              <div :class="data.className"></div>
-              <div class="tree-txt">
-                <span class="status-tree">{{node.label}}</span>
-                <span v-if="!data.officeName">{{data.active?'在线':'离线'}}</span>
-              </div>
-            </span>
-          </el-tree>
-        </div> -->
+
       </div>
     </transition>
   </bm-control>
@@ -75,7 +64,6 @@ export default {
         let activeList=await that.interValLinePerson(allDevice)
         // console.log('在线人员',activeList)
         this.changeTreeInfo(activeList);
-        // this.changePlayInfo(activeList);
       },10000)
     },
     //获取树状节点
@@ -236,6 +224,7 @@ export default {
           return item
         }
       })
+      
       //实时刷新设备在地图上的位置
       if(!this.$store.state.rePlay){
         this.$emit('setNewPosition',newList);
@@ -264,26 +253,12 @@ export default {
             })
             
             if(indexChild>=0){
-              // this.$refs.positionTree.remove(child)
-              // this.$refs.positionTree.append(Object.assign(user,{
-              //   active:true,
-              //   isBiGua:arr[indexChild].isBiGua,
-              //   className:child.carId?'active-car':'active-user'
-              // }),children)
-              // child.active=true 
-              // child.className=child.carId?'active-car':'active-user' 
-              // child.isBiGua=arr[indexChild].isBiGua
               children.splice(i,1,Object.assign(user,{
                 active:true,
                 isBiGua:arr[indexChild].isBiGua,
                 className:child.carId?'active-car':'active-user'
               }))
             }else{
-              // this.$refs.playTree.remove(child)
-              // this.$refs.playTree.append(Object.assign(user,{
-              //   active:false,
-              //   className:child.carId?'out-car':'out-user' 
-              // }),children)
               child.active=false 
               child.className=child.carId?'out-car':'out-user' 
             }
@@ -302,65 +277,7 @@ export default {
         }
       })
     },
-    //动态改变树形控件回放在线人员数据
-    changePlayInfo(arr){
-      if(!this.$refs.playTree) return;
-      let list = this.$refs.playTree.data[0].children;
-      list.forEach((item,index)=>{
-        if(item.officeName){
-          let children = item.children;
-          children.forEach((child,i)=>{
-            let user = Object.assign({},child);
-
-            if(!arr.length){
-              child.active=false 
-              child.className=child.carId?'out-car':'out-user' 
-              return;
-            }
-
-            let indexChild = arr.findIndex((value,i)=>{
-              return value.label==child.label
-            })
-
-            if(indexChild>=0){
-              // child.active=true 
-              // child.className=child.carId?'active-car':'active-user' 
-              // child.isBiGua=arr[indexChild].isBiGua
-              // this.$refs.playTree.remove(child)
-              // this.$refs.playTree.append(Object.assign(user,{
-              //   active:true,
-              //   isBiGua:arr[indexChild].isBiGua,
-              //   className:child.carId?'active-car':'active-user'
-              // }),children)
-              children.splice(i,1,Object.assign(user,{
-                active:true,
-                isBiGua:arr[indexChild].isBiGua,
-                className:child.carId?'active-car':'active-user'
-              }))
-            }else{
-              // this.$refs.playTree.remove(child)
-              // this.$refs.playTree.append(Object.assign(user,{
-              //   active:false,
-              //   className:child.carId?'out-car':'out-user' 
-              // }),children)
-              child.active=false 
-              child.className=child.carId?'out-car':'out-user' 
-            }
-          })
-        }else{
-          let indexFrist = arr.findIndex((value,i)=>{
-            return value.label==item.label
-          })
-          if(indexFrist>=0){
-            item.active=true
-            item.className=item.carId?'active-car':'active-user'
-          }else{
-            item.active=false
-            item.className=item.carId?'out-car':'out-user'
-          }
-        }
-      }) 
-    },
+ 
     //获取在线人员
     getActivePerson(val,item){
       let entity_name=val.deviceSid;
@@ -382,6 +299,8 @@ export default {
             className:'out-user',
             label:val.name,
             office:item.officeName,
+            "lng":0,
+            "lat":0,
             active:false
           })
         }
@@ -408,6 +327,8 @@ export default {
             className:'out-car',
             label:val.carNumber,
             office:item.officeName,
+            "lng":0,
+            "lat":0,
             active:false
           })
         }
