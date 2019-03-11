@@ -63,7 +63,7 @@ export default {
         ],
         series : [
           {
-            name:'阀井故障',
+            name:`${this.title.split('(')[0]}故障`,
             type:'bar',
             barWidth: '40%',
             data:data02
